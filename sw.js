@@ -1,6 +1,6 @@
 // Registro Polaco: funciona sin conexión.
 // Subí el número de versión cada vez que cambies index.html para que el celular tome la nueva.
-const VERSION = "registro-polaco-v1";
+const VERSION = "registro-polaco-v48";
 const ARCHIVOS = ["./", "./index.html", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/maskable-512.png",
   "./icons/apple-touch-icon.png", "./icons/favicon-32.png"];
