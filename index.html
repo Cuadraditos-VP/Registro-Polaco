@@ -776,8 +776,27 @@ async function iniciar(){
     }, () => setSave("err","Sin conexión con los datos"));
   } else {
     modo = "local"; cargarLocal(); cajasCargadas = true; guardarLocal(); render();
+    // Pedirle al navegador que no borre estos datos aunque le falte espacio
+    try { navigator.storage?.persist?.().catch(() => {}); } catch {}
   }
 }
+// Si la app está abierta en otra ventana y guarda algo, esta ventana toma esos datos
+// antes de seguir, así ninguna pisa las ventas de la otra.
+window.addEventListener("storage", e => {
+  if (modo !== "local" || e.key !== LS_KEY || !e.newValue) return;
+  let d; try { d = JSON.parse(e.newValue); } catch { return; }
+  productos = d.productos || []; ventas = d.ventas || [];
+  if (d.cajas) cajas = normCajas(d.cajas);
+  if (d.mesas && !mesasSucias) {
+    mesasCfg = d.mesas;
+    if (cuentaActiva !== null) { const k = String(cuentaActiva); mesasCfg.abiertas[k] ||= { items:{}, desde: Date.now() }; carrito = mesasCfg.abiertas[k].items; }
+  }
+  limpiarCarrito(); render();
+  if ($("#dlgEdit").open && !editando) renderEdit();
+  if ($("#dlgHist").open) renderHist();
+  if ($("#dlgHoy").open) renderHoy();
+  if ($("#dlgCaja").open && !cierreEnCurso) renderCaja();
+});
 const esCarpeta = x => !!x && x.tipo === "carpeta";
 const carpetas = () => productos.filter(esCarpeta);
 const enCarpetaValida = p => !!p.carpeta && productos.some(c => c.id === p.carpeta && esCarpeta(c));
