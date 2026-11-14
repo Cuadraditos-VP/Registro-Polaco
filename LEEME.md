@@ -1,4 +1,4 @@
-# Registro Polaco
+# TBC — registro de ventas
 
 Registro de ventas del puesto: productos con ícono o foto, stock, ticket imprimible y caja del día.
 Los datos se guardan en el navegador de cada dispositivo.
