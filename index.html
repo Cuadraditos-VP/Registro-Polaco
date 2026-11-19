@@ -2085,7 +2085,21 @@ aplicarRol();
 
 <script>
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+  // Busca versión nueva al abrir y al volver a la app; si hay, recarga sola una vez
+  const habiaControl = !!navigator.serviceWorker.controller;
+  let recargando = false;
+  let hayNueva = false;
+  const recargarSiSePuede = () => {
+    if (!hayNueva || recargando) return;
+    if (Object.keys(carritoMostrador).length || document.querySelector("dialog[open]")) return; // no cortar una venta
+    recargando = true; location.reload();
+  };
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (habiaControl) { hayNueva = true; recargarSiSePuede(); } });
+  setInterval(recargarSiSePuede, 5000);
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" }).then(reg => {
+    reg.update().catch(() => {});
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") reg.update().catch(() => {}); });
+  }).catch(() => {}));
 }
 </script>
 </body>

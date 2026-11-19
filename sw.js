@@ -1,6 +1,6 @@
 // La app funciona sin conexión.
 // Subí el número de versión cada vez que cambies index.html para que el celular tome la nueva.
-const VERSION = "registro-polaco-v53";
+const VERSION = "registro-polaco-v54";
 const ARCHIVOS = ["./", "./index.html", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/maskable-512.png",
   "./icons/apple-touch-icon.png", "./icons/favicon-32.png", "./icons/escudo.png"];
@@ -19,7 +19,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
   // La página: primero la red (para tomar cambios), si no hay señal la guardada
   if (req.mode === "navigate") {
-    e.respondWith(fetch(req).then(r => { const c = r.clone(); caches.open(VERSION).then(x => x.put("./index.html", c)); return r; })
+    e.respondWith(fetch(req, { cache: "no-store" }).then(r => { const c = r.clone(); caches.open(VERSION).then(x => x.put("./index.html", c)); return r; })
       .catch(() => caches.match("./index.html")));
     return;
   }
